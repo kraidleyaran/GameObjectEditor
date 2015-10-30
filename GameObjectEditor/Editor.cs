@@ -18,16 +18,19 @@ namespace GameObjectEditor
     public partial class GameObjecteEditor : Form
     {
         GameFileDialog fileDialog = new GameFileDialog();
-        private GameObserver Observer = GameObserver.Instance;
+        private GameObserver Observer = new GameObserver();
         private GameArchive Archive = GameArchive.Instance;
 
         private Dictionary<string, GameObject> DisplayObjectList = new Dictionary<string, GameObject>();
         private Dictionary<string, Property> displayObjectPropertiesList = new Dictionary<string, Property>();
 
+        private const string extension = "gcod";
+        private const string name = "Observer";
+
         private string SaveDirectory = @"C:\";
         private GameObject selectedGameObject;
         private Property selectedProperty;
-        private GameData currentGameData;
+        private ObserverData currentObserverData;
         public GameObjecteEditor()
         {
             InitializeComponent();
@@ -36,17 +39,12 @@ namespace GameObjectEditor
         
 
         #region helper GameObject methods
-        private void getGameObjects(GameData gameData)
+        private void getGameObjects(ObserverData observerData)
         {
             ClearGameObjectListBox();
-            foreach (KeyValuePair<string, GameObject> obj in gameData.ObserverData.ActiveObjects)
+            foreach (KeyValuePair<string, GameObject> obj in observerData.ObjectList)
             {
-                Observer.ObserveGameObject(obj.Value, ObjectStatus.Active);
-                DisplayObjectList.Add(obj.Key, obj.Value);
-            }
-            foreach (KeyValuePair<string, GameObject> obj in gameData.ObserverData.InactiveObjects)
-            {
-                Observer.ObserveGameObject(obj.Value, ObjectStatus.Inactive);
+                Observer.ObserveGameObject(obj.Value);
                 DisplayObjectList.Add(obj.Key, obj.Value);
             }
             fillGameObjectListBox();
@@ -79,57 +77,46 @@ namespace GameObjectEditor
             listBox_GameObjects.Items.Remove(gameObject.Name);
         }
 
-        private void RemoveGameObjectFromDisplay(string name)
+        private void RemoveGameObjectFromDisplay(string objectName)
         {
-            DisplayObjectList.Remove(name);
-            listBox_GameObjects.Items.Remove(name);
+            DisplayObjectList.Remove(objectName);
+            listBox_GameObjects.Items.Remove(objectName);
         }
 
-        private void SetObjectStatus(bool status)
-        {
-            if (status)
-            {
-                radio_Active.Checked = true;
-                radio_Inactive.Checked = false;
-            }
-            else
-            {
-                radio_Active.Checked = false;
-                radio_Inactive.Checked = true;
-            }
-        }
         #endregion
 
         #region GCD buttons
         private void btn_NewGCD_Click(object sender, EventArgs e)
         {
             ClearGameObjectListBox();
-            Response response = fileDialog.SaveFile(new GameData(Observer.GetObserverData()));
+            ObserverData observerData = Observer.GetObserverData();
+            Response response = fileDialog.SaveFile(observerData, extension, name);
             SaveDirectory = response.DirectoryPath;
             EnableAll();
         }
         private void btn_LoadGCD_Click(object sender, EventArgs e)
         {
-            Response response = fileDialog.LoadFile();
+            Response response = fileDialog.LoadFile<ObserverData>(extension, name);
             if (!response.ValidData) return;
 
-            currentGameData = response.GameData;
+            currentObserverData = (ObserverData)response.Data;
             SaveDirectory = response.DirectoryPath;
-            getGameObjects(currentGameData);
+            getGameObjects(currentObserverData);
             EnableAll();
         }
 
         private void btn_SaveGCD_Click(object sender, EventArgs e)
         {
-            currentGameData.ObserverData = Observer.GetObserverData();
-            Archive.SaveData(currentGameData, SaveDirectory);
+            if (currentObserverData == null) return;
+            currentObserverData = Observer.GetObserverData();
+            Archive.SaveData(currentObserverData, SaveDirectory);
         }
         #endregion
 
         #region GameObject Buttons
         private void btn_NewGameObject_Click(object sender, EventArgs e)
         {
-            NewGameObject newObjectForm = new NewGameObject();
+            NewGameObject newObjectForm = new NewGameObject(Observer);
             newObjectForm.Closed += delegate(object o, EventArgs args)
             {
                 if (newObjectForm.ValidObject)
@@ -159,50 +146,11 @@ namespace GameObjectEditor
                 MessageBox.Show("GameObject name " + txtBox_GameObjectName.Text + " already exists");
                 return;
             }
-            if (!radio_Active.Checked && !radio_Inactive.Checked)
-            {
-                MessageBox.Show("GameObject must have a status", "No status", MessageBoxButtons.OK);
-                return;
-            }
 
             selectedGameObject.Name = txtBox_GameObjectName.Text;
             RemoveGameObjectFromDisplay(objectName);
-            bool test = Observer.UnobserveGameObject(objectName);
-            switch (doesGameObjectExist)
-            {
-                case true:
-                    switch (radio_Active.Checked)
-                    {
-                        case true:
-                            Observer.ObserveGameObject(selectedGameObject, ObjectStatus.Active);
-                            AddGameObjectToDisplay(selectedGameObject);
-                            break;
-                    }
-                    switch (radio_Inactive.Checked)
-                    {
-                        case true:
-                            Observer.ObserveGameObject(selectedGameObject, ObjectStatus.Inactive);
-                            AddGameObjectToDisplay(selectedGameObject);
-                            break;
-                    }
-                    break;
-                case false:
-                    switch (radio_Active.Checked)
-                    {
-                        case true:
-                            Observer.ObserveGameObject(selectedGameObject, ObjectStatus.Active);
-                            AddGameObjectToDisplay(selectedGameObject);
-                            break;
-                    }
-                    switch (radio_Inactive.Checked)
-                    {
-                        case true:
-                            Observer.ObserveGameObject(selectedGameObject, ObjectStatus.Inactive);
-                            AddGameObjectToDisplay(selectedGameObject);
-                            break;
-                    }
-                    break;
-            }
+            Observer.UnobserveGameObject(objectName);
+            Observer.ObserveGameObject(selectedGameObject);
 
         }
 
@@ -259,7 +207,6 @@ namespace GameObjectEditor
             btn_SaveGCD.Enabled = false;
             btn_SaveObject.Enabled = false;
             btn_SaveProperty.Enabled = false;
-            grpBox_Status.Enabled = false;
             grpBox_Type.Enabled = false;
             btn_CloneProperty.Enabled = false;
         }
@@ -277,7 +224,6 @@ namespace GameObjectEditor
             btn_SaveGCD.Enabled = true;
             btn_SaveObject.Enabled = true;
             btn_SaveProperty.Enabled = true;
-            grpBox_Status.Enabled = true;
             grpBox_Type.Enabled = true;
             btn_CloneProperty.Enabled = true;
         }
@@ -299,20 +245,6 @@ namespace GameObjectEditor
                 return;
             }
             selectedGameObject = gameObject;
-            ObjectStatus status = Observer.GetGameObjectStatus(gameObjectName);
-            switch (status)
-            {
-                case ObjectStatus.Active:
-                    SetObjectStatus(true);
-                    break;
-                case ObjectStatus.Inactive:
-                    SetObjectStatus(false);
-                    break;
-                case ObjectStatus.Error:
-                    radio_Active.Checked = false;
-                    radio_Inactive.Checked = false;
-                    break;
-            }
             ClearPropertyFields();
             FillPropertyBox(gameObject.GetAllProperties());
             if (selectedGameObject.Image == null)
@@ -531,19 +463,7 @@ namespace GameObjectEditor
             GameObject clonedGameObject = selectedGameObject.CloneGameObject();
             int number = 1;
             clonedGameObject.Name = GetUnusedObjectName(clonedGameObject.Name, number);
-            if (radio_Active.Checked && !radio_Inactive.Checked)
-            {
-                Observer.ObserveGameObject(clonedGameObject, ObjectStatus.Active);
-            }
-            else if (!radio_Active.Checked && radio_Inactive.Checked)
-            {
-                Observer.ObserveGameObject(clonedGameObject, ObjectStatus.Inactive);
-            }
-            else
-            {
-                MessageBox.Show("Cannot set GameObject status", "Invalid GameObject status", MessageBoxButtons.OK);
-                return;
-            }
+            Observer.ObserveGameObject(clonedGameObject);
             AddGameObjectToDisplay(clonedGameObject);
             
         }

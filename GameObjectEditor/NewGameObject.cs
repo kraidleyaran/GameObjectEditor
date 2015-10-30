@@ -14,12 +14,13 @@ namespace GameObjectEditor
 {
     public partial class NewGameObject : Form
     {
-        private GameObserver Observer = GameObserver.Instance;
+        private GameObserver Observer;
         public GameObject ReturnGameObject;
         public bool ValidObject = false;
-        public NewGameObject()
+        public NewGameObject(GameObserver observer)
         {
             InitializeComponent();
+            Observer = observer;
         }
 
         private void btn_Cancel_Click(object sender, EventArgs e)

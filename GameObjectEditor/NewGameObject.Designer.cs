@@ -79,7 +79,11 @@
             this.Controls.Add(this.txtBox_Name);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.btn_Create);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximumSize = new System.Drawing.Size(293, 156);
+            this.MinimumSize = new System.Drawing.Size(293, 156);
             this.Name = "NewGameObject";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Game Object";
             this.ResumeLayout(false);
             this.PerformLayout();

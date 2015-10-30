@@ -54,16 +54,12 @@
             this.btn_SaveObject = new System.Windows.Forms.Button();
             this.txtBox_GameObjectName = new System.Windows.Forms.TextBox();
             this.lbl_SelectedGameObject = new System.Windows.Forms.Label();
-            this.grpBox_Status = new System.Windows.Forms.GroupBox();
-            this.radio_Inactive = new System.Windows.Forms.RadioButton();
-            this.radio_Active = new System.Windows.Forms.RadioButton();
             this.txtBox_PropertyName = new System.Windows.Forms.TextBox();
             this.lbl_PropertyName = new System.Windows.Forms.Label();
             this.btn_CloneProperty = new System.Windows.Forms.Button();
             this.btn_ImportFromGCD = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pic_IconRep)).BeginInit();
             this.grpBox_Type.SuspendLayout();
-            this.grpBox_Status.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox_GameObjects
@@ -108,7 +104,7 @@
             this.btn_NewGCD.Name = "btn_NewGCD";
             this.btn_NewGCD.Size = new System.Drawing.Size(75, 23);
             this.btn_NewGCD.TabIndex = 4;
-            this.btn_NewGCD.Text = "New GCD";
+            this.btn_NewGCD.Text = "New Obs";
             this.btn_NewGCD.UseVisualStyleBackColor = true;
             this.btn_NewGCD.Click += new System.EventHandler(this.btn_NewGCD_Click);
             // 
@@ -118,7 +114,7 @@
             this.btn_LoadGCD.Name = "btn_LoadGCD";
             this.btn_LoadGCD.Size = new System.Drawing.Size(75, 23);
             this.btn_LoadGCD.TabIndex = 5;
-            this.btn_LoadGCD.Text = "Load GCD";
+            this.btn_LoadGCD.Text = "Load Obs";
             this.btn_LoadGCD.UseVisualStyleBackColor = true;
             this.btn_LoadGCD.Click += new System.EventHandler(this.btn_LoadGCD_Click);
             // 
@@ -128,7 +124,7 @@
             this.btn_SaveGCD.Name = "btn_SaveGCD";
             this.btn_SaveGCD.Size = new System.Drawing.Size(75, 23);
             this.btn_SaveGCD.TabIndex = 6;
-            this.btn_SaveGCD.Text = "Save GCD";
+            this.btn_SaveGCD.Text = "Save Obs";
             this.btn_SaveGCD.UseVisualStyleBackColor = true;
             this.btn_SaveGCD.Click += new System.EventHandler(this.btn_SaveGCD_Click);
             // 
@@ -153,7 +149,7 @@
             // 
             // btn_DeleteGameObject
             // 
-            this.btn_DeleteGameObject.Location = new System.Drawing.Point(104, 278);
+            this.btn_DeleteGameObject.Location = new System.Drawing.Point(103, 233);
             this.btn_DeleteGameObject.Name = "btn_DeleteGameObject";
             this.btn_DeleteGameObject.Size = new System.Drawing.Size(114, 23);
             this.btn_DeleteGameObject.TabIndex = 9;
@@ -281,7 +277,7 @@
             // 
             // btn_CloneObject
             // 
-            this.btn_CloneObject.Location = new System.Drawing.Point(170, 241);
+            this.btn_CloneObject.Location = new System.Drawing.Point(169, 196);
             this.btn_CloneObject.Name = "btn_CloneObject";
             this.btn_CloneObject.Size = new System.Drawing.Size(117, 23);
             this.btn_CloneObject.TabIndex = 19;
@@ -291,7 +287,7 @@
             // 
             // btn_SaveObject
             // 
-            this.btn_SaveObject.Location = new System.Drawing.Point(39, 242);
+            this.btn_SaveObject.Location = new System.Drawing.Point(38, 197);
             this.btn_SaveObject.Name = "btn_SaveObject";
             this.btn_SaveObject.Size = new System.Drawing.Size(114, 23);
             this.btn_SaveObject.TabIndex = 20;
@@ -314,39 +310,6 @@
             this.lbl_SelectedGameObject.Size = new System.Drawing.Size(114, 13);
             this.lbl_SelectedGameObject.TabIndex = 22;
             this.lbl_SelectedGameObject.Text = "Selected Game Object";
-            // 
-            // grpBox_Status
-            // 
-            this.grpBox_Status.Controls.Add(this.radio_Inactive);
-            this.grpBox_Status.Controls.Add(this.radio_Active);
-            this.grpBox_Status.Location = new System.Drawing.Point(87, 180);
-            this.grpBox_Status.Name = "grpBox_Status";
-            this.grpBox_Status.Size = new System.Drawing.Size(131, 46);
-            this.grpBox_Status.TabIndex = 23;
-            this.grpBox_Status.TabStop = false;
-            this.grpBox_Status.Text = "Status";
-            // 
-            // radio_Inactive
-            // 
-            this.radio_Inactive.AutoSize = true;
-            this.radio_Inactive.Location = new System.Drawing.Point(68, 19);
-            this.radio_Inactive.Name = "radio_Inactive";
-            this.radio_Inactive.Size = new System.Drawing.Size(63, 17);
-            this.radio_Inactive.TabIndex = 1;
-            this.radio_Inactive.TabStop = true;
-            this.radio_Inactive.Text = "Inactive";
-            this.radio_Inactive.UseVisualStyleBackColor = true;
-            // 
-            // radio_Active
-            // 
-            this.radio_Active.AutoSize = true;
-            this.radio_Active.Location = new System.Drawing.Point(7, 19);
-            this.radio_Active.Name = "radio_Active";
-            this.radio_Active.Size = new System.Drawing.Size(55, 17);
-            this.radio_Active.TabIndex = 0;
-            this.radio_Active.TabStop = true;
-            this.radio_Active.Text = "Active";
-            this.radio_Active.UseVisualStyleBackColor = true;
             // 
             // txtBox_PropertyName
             // 
@@ -392,7 +355,6 @@
             this.Controls.Add(this.btn_CloneProperty);
             this.Controls.Add(this.lbl_PropertyName);
             this.Controls.Add(this.txtBox_PropertyName);
-            this.Controls.Add(this.grpBox_Status);
             this.Controls.Add(this.lbl_SelectedGameObject);
             this.Controls.Add(this.txtBox_GameObjectName);
             this.Controls.Add(this.btn_SaveObject);
@@ -416,13 +378,15 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBox_Properties);
             this.Controls.Add(this.listBox_GameObjects);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximumSize = new System.Drawing.Size(1078, 658);
+            this.MinimumSize = new System.Drawing.Size(1078, 658);
             this.Name = "GameObjecteEditor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game Object Editor";
             ((System.ComponentModel.ISupportInitialize)(this.pic_IconRep)).EndInit();
             this.grpBox_Type.ResumeLayout(false);
             this.grpBox_Type.PerformLayout();
-            this.grpBox_Status.ResumeLayout(false);
-            this.grpBox_Status.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -456,9 +420,6 @@
         private System.Windows.Forms.Button btn_SaveObject;
         private System.Windows.Forms.TextBox txtBox_GameObjectName;
         private System.Windows.Forms.Label lbl_SelectedGameObject;
-        private System.Windows.Forms.GroupBox grpBox_Status;
-        private System.Windows.Forms.RadioButton radio_Inactive;
-        private System.Windows.Forms.RadioButton radio_Active;
         private System.Windows.Forms.TextBox txtBox_PropertyName;
         private System.Windows.Forms.Label lbl_PropertyName;
         private System.Windows.Forms.Button btn_CloneProperty;

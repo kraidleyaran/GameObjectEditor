@@ -150,7 +150,11 @@
             this.Controls.Add(this.grpBox_Type);
             this.Controls.Add(this.lbl_PropertyValue);
             this.Controls.Add(this.txtBox_PropertyValue);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximumSize = new System.Drawing.Size(289, 243);
+            this.MinimumSize = new System.Drawing.Size(289, 243);
             this.Name = "NewGameObjectProperty";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewGameObjectProperty";
             this.grpBox_Type.ResumeLayout(false);
             this.grpBox_Type.PerformLayout();
