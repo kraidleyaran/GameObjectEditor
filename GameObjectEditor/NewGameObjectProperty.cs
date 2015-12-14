@@ -43,6 +43,7 @@ namespace GameObjectEditor
             if (typeSelected.Count < 1)
             {
                 MessageBox.Show("No type selected", "No type", MessageBoxButtons.OK);
+                return;
             }
             string type = typeSelected.First().Key;
             if (!IsPropertyValueValid(type))

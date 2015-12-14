@@ -35,6 +35,8 @@ namespace GameObjectEditor
         {
             InitializeComponent();
             DisableAll();
+            DisableGameObjectEntry();
+            DisableGamePropertyEntry();
         }
         
 
@@ -151,7 +153,7 @@ namespace GameObjectEditor
             RemoveGameObjectFromDisplay(objectName);
             Observer.UnobserveGameObject(objectName);
             Observer.ObserveGameObject(selectedGameObject);
-
+            AddGameObjectToDisplay(selectedGameObject);
         }
 
         private void btn_DeleteGameObject_Click(object sender, EventArgs e)
@@ -196,45 +198,32 @@ namespace GameObjectEditor
         #region Disable All and Enable All buttons
         private void DisableAll()
         {
-            btn_CloneObject.Enabled = false;
-            btn_DeleteGameObject.Enabled = false;
-            btn_DeleteProperty.Enabled = false;
-            btn_Export.Enabled = false;
-            btn_ImportFromGCD.Enabled = false;
-            btn_LoadImage.Enabled = false;
             btn_NewGameObject.Enabled = false;
             btn_NewProperty.Enabled = false;
             btn_SaveGCD.Enabled = false;
-            btn_SaveObject.Enabled = false;
-            btn_SaveProperty.Enabled = false;
-            grpBox_Type.Enabled = false;
-            btn_CloneProperty.Enabled = false;
         }
 
         private void EnableAll()
         {
-            btn_CloneObject.Enabled = true;
-            btn_DeleteGameObject.Enabled = true;
-            btn_DeleteProperty.Enabled = true;
-            btn_Export.Enabled = true;
-            btn_ImportFromGCD.Enabled = true;
-            btn_LoadImage.Enabled = true;
             btn_NewGameObject.Enabled = true;
             btn_NewProperty.Enabled = true;
             btn_SaveGCD.Enabled = true;
-            btn_SaveObject.Enabled = true;
-            btn_SaveProperty.Enabled = true;
-            grpBox_Type.Enabled = true;
-            btn_CloneProperty.Enabled = true;
+
         }
         #endregion
 
         #region Listbox EventHandlers
         private void listObjectBox_OnSelect(object sender, EventArgs args)
         {
+            if (listBox_GameObjects.SelectedItem == null)
+            {
+                DisableGameObjectEntry();
+                DisableGamePropertyEntry();
+                listBox_Properties.Items.Clear();
+                return;
+            }
+            EnableGameObjectEntry();
             string gameObjectName = (string)listBox_GameObjects.SelectedItem;
-            if (string.IsNullOrEmpty(gameObjectName)) return;
-            
             txtBox_GameObjectName.Text = gameObjectName;
             
             GameObject gameObject;
@@ -247,20 +236,18 @@ namespace GameObjectEditor
             selectedGameObject = gameObject;
             ClearPropertyFields();
             FillPropertyBox(gameObject.GetAllProperties());
-            if (selectedGameObject.Image == null)
-            {
-                pic_IconRep.Image = null;
-                return;
-            }
-            pic_IconRep.Image = selectedGameObject.Image.ConvertBinaryToImage();
-            SetImageSize();
         }
 
         private void listPropertiesBox_OnSelect(object sender, EventArgs args)
         {
+            if (listBox_Properties.SelectedItem == null)
+            {
+                DisableGamePropertyEntry();
+                return;
+            }
+            EnableGamePropertyEntry();
             string propertyName = (string)listBox_Properties.SelectedItem;
-            if (string.IsNullOrEmpty(propertyName)) return;
-
+            EnableGamePropertyEntry();
             txtBox_PropertyName.Text = propertyName;
             Property prop;
             displayObjectPropertiesList.TryGetValue(propertyName, out prop);
@@ -315,7 +302,6 @@ namespace GameObjectEditor
             }
             
             NewGameObjectProperty newPropWindow = new NewGameObjectProperty(selectedGameObject);
-            newPropWindow.ShowDialog();
             newPropWindow.Closed += delegate(object o, EventArgs args)
             {
                 if (!newPropWindow.ValidProperty) return;
@@ -323,7 +309,7 @@ namespace GameObjectEditor
                 SaveSelectedGameObject();
                 AddPropertyToDisplayWindow(newPropWindow.ReturnProperty);
             };
-            
+            newPropWindow.ShowDialog();
         }
 
         private void AddPropertyToDisplayWindow(Property property)
@@ -519,35 +505,73 @@ namespace GameObjectEditor
             }
         }
 
-        private void btn_LoadImage_Click(object sender, EventArgs e)
+        private void DisableGameObjectEntry()
         {
-            using (OpenFileDialog newOpenFileDialog = new OpenFileDialog {InitialDirectory = @"C:\"})
-            {
-                switch (newOpenFileDialog.ShowDialog())
-                {
-                    case DialogResult.OK:
-                        FileStream stream = File.OpenRead(newOpenFileDialog.FileName);                        
-                        Image image = Image.FromStream(stream);
-                        selectedGameObject.SetImage(image);
-                        pic_IconRep.Image = image;
-                        SetImageSize();
-                        break;
-                }
-            }
+            btn_CloneObject.Enabled = false;
+            btn_DeleteGameObject.Enabled = false;
+            btn_SaveObject.Enabled = false;
+            txtBox_GameObjectName.Enabled = false;
         }
 
-        private void SetImageSize()
+        private void EnableGameObjectEntry()
         {
-            if (pic_IconRep.Image.Size.Height > pic_IconRep.Height || pic_IconRep.Size.Width > pic_IconRep.Width)
-            {
-                pic_IconRep.SizeMode = PictureBoxSizeMode.StretchImage;
-            }
-            else
-            {
-                pic_IconRep.SizeMode = PictureBoxSizeMode.CenterImage;
-            }
+            btn_CloneObject.Enabled = true;
+            btn_DeleteGameObject.Enabled = true;
+            btn_SaveObject.Enabled = true;
+            txtBox_GameObjectName.Enabled = true;
         }
 
+        private void DisableGamePropertyEntry()
+        {
+            btn_CloneProperty.Enabled = false;
+            btn_DeleteProperty.Enabled = false;
+            btn_SaveProperty.Enabled = false;
+            txtBox_PropertyName.Enabled = false;
+            txtBox_PropertyValue.Enabled = false;
+            grpBox_Type.Enabled = false;
+        }
+
+        private void EnableGamePropertyEntry()
+        {
+            btn_CloneProperty.Enabled = true;
+            btn_DeleteProperty.Enabled = true;
+            btn_SaveProperty.Enabled = true;
+            txtBox_PropertyName.Enabled = true;
+            txtBox_PropertyValue.Enabled = true;
+            grpBox_Type.Enabled = true;
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearGameObjectListBox();
+            ObserverData observerData = Observer.GetObserverData();
+            Response response = fileDialog.SaveFile(observerData, extension, name);
+            SaveDirectory = response.DirectoryPath;
+            EnableAll();
+        }
+
+        private void loadObsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Response response = fileDialog.LoadFile<ObserverData>(extension, name);
+            if (!response.ValidData) return;
+
+            currentObserverData = (ObserverData)response.Data;
+            SaveDirectory = response.DirectoryPath;
+            getGameObjects(currentObserverData);
+            EnableAll();
+        }
+
+        private void saveObsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentObserverData == null) return;
+            currentObserverData = Observer.GetObserverData();
+            Archive.SaveData(currentObserverData, SaveDirectory);
+        }
+
+        private void GameObjecteEditor_Load(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }

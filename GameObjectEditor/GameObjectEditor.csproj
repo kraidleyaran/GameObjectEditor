@@ -83,6 +83,12 @@
     <Compile Include="Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameObjectTemplateManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameObjectTemplateManager.Designer.cs">
+      <DependentUpon>GameObjectTemplateManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewGameObject.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameObjectTemplateManager.resx">
+      <DependentUpon>GameObjectTemplateManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewGameObject.resx">
       <DependentUpon>NewGameObject.cs</DependentUpon>
