@@ -37,17 +37,17 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbl_DefaultValue = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtBox_PropertyName = new System.Windows.Forms.TextBox();
+            this.txtBox_PropertyValue = new System.Windows.Forms.TextBox();
             this.grpBox_Property = new System.Windows.Forms.GroupBox();
             this.grpBox_Type = new System.Windows.Forms.GroupBox();
-            this.rdo_String = new System.Windows.Forms.RadioButton();
-            this.rdo_Number = new System.Windows.Forms.RadioButton();
             this.rdo_Boolean = new System.Windows.Forms.RadioButton();
+            this.rdo_Number = new System.Windows.Forms.RadioButton();
+            this.rdo_String = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btn_SaveTemplate = new System.Windows.Forms.Button();
-            this.btn_Save = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btn_SaveProperty = new System.Windows.Forms.Button();
+            this.btn_CloneProperty = new System.Windows.Forms.Button();
             this.btn_DeleteProperty = new System.Windows.Forms.Button();
             this.btn_NewProperty = new System.Windows.Forms.Button();
             this.lbl_Templates = new System.Windows.Forms.Label();
@@ -65,6 +65,7 @@
             this.listBox_Templates.Name = "listBox_Templates";
             this.listBox_Templates.Size = new System.Drawing.Size(169, 355);
             this.listBox_Templates.TabIndex = 0;
+            this.listBox_Templates.SelectedIndexChanged += new System.EventHandler(this.listBox_Templates_SelectedIndexChanged);
             // 
             // listBox_Properties
             // 
@@ -73,6 +74,7 @@
             this.listBox_Properties.Name = "listBox_Properties";
             this.listBox_Properties.Size = new System.Drawing.Size(169, 355);
             this.listBox_Properties.TabIndex = 1;
+            this.listBox_Properties.SelectedIndexChanged += new System.EventHandler(this.listBox_Properties_SelectedIndexChanged);
             // 
             // txtBox_TemplateName
             // 
@@ -89,6 +91,7 @@
             this.btn_NewTemplate.TabIndex = 4;
             this.btn_NewTemplate.Text = "New Template";
             this.btn_NewTemplate.UseVisualStyleBackColor = true;
+            this.btn_NewTemplate.Click += new System.EventHandler(this.btn_NewTemplate_Click);
             // 
             // btn_CloneTemplate
             // 
@@ -120,7 +123,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // lbl_DefaultValue
@@ -132,25 +135,25 @@
             this.lbl_DefaultValue.TabIndex = 7;
             this.lbl_DefaultValue.Text = "Default Value";
             // 
-            // textBox1
+            // txtBox_PropertyName
             // 
-            this.textBox1.Location = new System.Drawing.Point(5, 19);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(272, 20);
-            this.textBox1.TabIndex = 8;
+            this.txtBox_PropertyName.Location = new System.Drawing.Point(5, 19);
+            this.txtBox_PropertyName.Name = "txtBox_PropertyName";
+            this.txtBox_PropertyName.Size = new System.Drawing.Size(272, 20);
+            this.txtBox_PropertyName.TabIndex = 8;
             // 
-            // textBox2
+            // txtBox_PropertyValue
             // 
-            this.textBox2.Location = new System.Drawing.Point(5, 69);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(272, 20);
-            this.textBox2.TabIndex = 9;
+            this.txtBox_PropertyValue.Location = new System.Drawing.Point(5, 69);
+            this.txtBox_PropertyValue.Name = "txtBox_PropertyValue";
+            this.txtBox_PropertyValue.Size = new System.Drawing.Size(272, 20);
+            this.txtBox_PropertyValue.TabIndex = 9;
             // 
             // grpBox_Property
             // 
             this.grpBox_Property.Controls.Add(this.grpBox_Type);
-            this.grpBox_Property.Controls.Add(this.textBox1);
-            this.grpBox_Property.Controls.Add(this.textBox2);
+            this.grpBox_Property.Controls.Add(this.txtBox_PropertyName);
+            this.grpBox_Property.Controls.Add(this.txtBox_PropertyValue);
             this.grpBox_Property.Controls.Add(this.lbl_DefaultValue);
             this.grpBox_Property.Location = new System.Drawing.Point(649, 57);
             this.grpBox_Property.Name = "grpBox_Property";
@@ -171,16 +174,17 @@
             this.grpBox_Type.TabStop = false;
             this.grpBox_Type.Text = "Type";
             // 
-            // rdo_String
+            // rdo_Boolean
             // 
-            this.rdo_String.AutoSize = true;
-            this.rdo_String.Location = new System.Drawing.Point(15, 19);
-            this.rdo_String.Name = "rdo_String";
-            this.rdo_String.Size = new System.Drawing.Size(52, 17);
-            this.rdo_String.TabIndex = 0;
-            this.rdo_String.TabStop = true;
-            this.rdo_String.Text = "String";
-            this.rdo_String.UseVisualStyleBackColor = true;
+            this.rdo_Boolean.AutoSize = true;
+            this.rdo_Boolean.Location = new System.Drawing.Point(192, 19);
+            this.rdo_Boolean.Name = "rdo_Boolean";
+            this.rdo_Boolean.Size = new System.Drawing.Size(64, 17);
+            this.rdo_Boolean.TabIndex = 2;
+            this.rdo_Boolean.TabStop = true;
+            this.rdo_Boolean.Text = "Boolean";
+            this.rdo_Boolean.UseVisualStyleBackColor = true;
+            this.rdo_Boolean.CheckedChanged += new System.EventHandler(this.rdo_Boolean_CheckedChanged);
             // 
             // rdo_Number
             // 
@@ -192,17 +196,19 @@
             this.rdo_Number.TabStop = true;
             this.rdo_Number.Text = "Number";
             this.rdo_Number.UseVisualStyleBackColor = true;
+            this.rdo_Number.CheckedChanged += new System.EventHandler(this.rdo_Number_CheckedChanged);
             // 
-            // rdo_Boolean
+            // rdo_String
             // 
-            this.rdo_Boolean.AutoSize = true;
-            this.rdo_Boolean.Location = new System.Drawing.Point(192, 19);
-            this.rdo_Boolean.Name = "rdo_Boolean";
-            this.rdo_Boolean.Size = new System.Drawing.Size(64, 17);
-            this.rdo_Boolean.TabIndex = 2;
-            this.rdo_Boolean.TabStop = true;
-            this.rdo_Boolean.Text = "Boolean";
-            this.rdo_Boolean.UseVisualStyleBackColor = true;
+            this.rdo_String.AutoSize = true;
+            this.rdo_String.Location = new System.Drawing.Point(15, 19);
+            this.rdo_String.Name = "rdo_String";
+            this.rdo_String.Size = new System.Drawing.Size(52, 17);
+            this.rdo_String.TabIndex = 0;
+            this.rdo_String.TabStop = true;
+            this.rdo_String.Text = "String";
+            this.rdo_String.UseVisualStyleBackColor = true;
+            this.rdo_String.CheckedChanged += new System.EventHandler(this.rdo_String_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -224,24 +230,26 @@
             this.btn_SaveTemplate.TabIndex = 6;
             this.btn_SaveTemplate.Text = "Save Template";
             this.btn_SaveTemplate.UseVisualStyleBackColor = true;
+            this.btn_SaveTemplate.Click += new System.EventHandler(this.btn_SaveTemplate_Click);
             // 
-            // btn_Save
+            // btn_SaveProperty
             // 
-            this.btn_Save.Location = new System.Drawing.Point(654, 219);
-            this.btn_Save.Name = "btn_Save";
-            this.btn_Save.Size = new System.Drawing.Size(89, 23);
-            this.btn_Save.TabIndex = 12;
-            this.btn_Save.Text = "Save Property";
-            this.btn_Save.UseVisualStyleBackColor = true;
+            this.btn_SaveProperty.Location = new System.Drawing.Point(654, 219);
+            this.btn_SaveProperty.Name = "btn_SaveProperty";
+            this.btn_SaveProperty.Size = new System.Drawing.Size(89, 23);
+            this.btn_SaveProperty.TabIndex = 12;
+            this.btn_SaveProperty.Text = "Save Property";
+            this.btn_SaveProperty.UseVisualStyleBackColor = true;
+            this.btn_SaveProperty.Click += new System.EventHandler(this.btn_SaveProperty_Click);
             // 
-            // button2
+            // btn_CloneProperty
             // 
-            this.button2.Location = new System.Drawing.Point(842, 219);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(89, 23);
-            this.button2.TabIndex = 13;
-            this.button2.Text = "Clone Property";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btn_CloneProperty.Location = new System.Drawing.Point(842, 219);
+            this.btn_CloneProperty.Name = "btn_CloneProperty";
+            this.btn_CloneProperty.Size = new System.Drawing.Size(89, 23);
+            this.btn_CloneProperty.TabIndex = 13;
+            this.btn_CloneProperty.Text = "Clone Property";
+            this.btn_CloneProperty.UseVisualStyleBackColor = true;
             // 
             // btn_DeleteProperty
             // 
@@ -260,6 +268,7 @@
             this.btn_NewProperty.TabIndex = 15;
             this.btn_NewProperty.Text = "New Property";
             this.btn_NewProperty.UseVisualStyleBackColor = true;
+            this.btn_NewProperty.Click += new System.EventHandler(this.btn_NewProperty_Click);
             // 
             // lbl_Templates
             // 
@@ -288,8 +297,8 @@
             this.Controls.Add(this.lbl_Templates);
             this.Controls.Add(this.btn_NewProperty);
             this.Controls.Add(this.btn_DeleteProperty);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.btn_Save);
+            this.Controls.Add(this.btn_CloneProperty);
+            this.Controls.Add(this.btn_SaveProperty);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpBox_Property);
             this.Controls.Add(this.btn_NewTemplate);
@@ -297,7 +306,11 @@
             this.Controls.Add(this.listBox_Templates);
             this.Controls.Add(this.menuStrip_Main);
             this.MainMenuStrip = this.menuStrip_Main;
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(959, 474);
+            this.MinimumSize = new System.Drawing.Size(959, 474);
             this.Name = "GameObjectTemplateManager";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game Object Template Manager";
             this.Load += new System.EventHandler(this.GameObjectTemplateManager_Load);
             this.menuStrip_Main.ResumeLayout(false);
@@ -324,8 +337,8 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Label lbl_DefaultValue;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtBox_PropertyName;
+        private System.Windows.Forms.TextBox txtBox_PropertyValue;
         private System.Windows.Forms.GroupBox grpBox_Property;
         private System.Windows.Forms.GroupBox grpBox_Type;
         private System.Windows.Forms.RadioButton rdo_Boolean;
@@ -333,8 +346,8 @@
         private System.Windows.Forms.RadioButton rdo_String;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_SaveTemplate;
-        private System.Windows.Forms.Button btn_Save;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btn_SaveProperty;
+        private System.Windows.Forms.Button btn_CloneProperty;
         private System.Windows.Forms.Button btn_DeleteProperty;
         private System.Windows.Forms.Button btn_NewProperty;
         private System.Windows.Forms.Label lbl_Templates;

@@ -55,6 +55,7 @@
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadObsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveObsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsObsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.templateManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_NewFromTemplate = new System.Windows.Forms.Button();
@@ -188,6 +189,7 @@
             this.radio_Number.TabStop = true;
             this.radio_Number.Text = "Number";
             this.radio_Number.UseVisualStyleBackColor = true;
+            this.radio_Number.CheckedChanged += new System.EventHandler(this.radio_Number_CheckedChanged);
             // 
             // radio_String
             // 
@@ -199,6 +201,7 @@
             this.radio_String.TabStop = true;
             this.radio_String.Text = "String";
             this.radio_String.UseVisualStyleBackColor = true;
+            this.radio_String.CheckedChanged += new System.EventHandler(this.radio_String_CheckedChanged);
             // 
             // btn_SaveProperty
             // 
@@ -289,6 +292,7 @@
             this.newToolStripMenuItem,
             this.loadObsToolStripMenuItem,
             this.saveObsToolStripMenuItem,
+            this.saveAsObsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -298,22 +302,29 @@
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.newToolStripMenuItem.Text = "New Obs";
+            this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // loadObsToolStripMenuItem
             // 
             this.loadObsToolStripMenuItem.Name = "loadObsToolStripMenuItem";
             this.loadObsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.loadObsToolStripMenuItem.Text = "Load Obs";
+            this.loadObsToolStripMenuItem.Text = "Load";
             this.loadObsToolStripMenuItem.Click += new System.EventHandler(this.loadObsToolStripMenuItem_Click);
             // 
             // saveObsToolStripMenuItem
             // 
             this.saveObsToolStripMenuItem.Name = "saveObsToolStripMenuItem";
             this.saveObsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveObsToolStripMenuItem.Text = "Save Obs";
+            this.saveObsToolStripMenuItem.Text = "Save";
             this.saveObsToolStripMenuItem.Click += new System.EventHandler(this.saveObsToolStripMenuItem_Click);
+            // 
+            // saveAsObsToolStripMenuItem
+            // 
+            this.saveAsObsToolStripMenuItem.Name = "saveAsObsToolStripMenuItem";
+            this.saveAsObsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsObsToolStripMenuItem.Text = "Save As";
+            this.saveAsObsToolStripMenuItem.Click += new System.EventHandler(this.saveAsObsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -326,6 +337,7 @@
             this.templateManagerToolStripMenuItem.Name = "templateManagerToolStripMenuItem";
             this.templateManagerToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
             this.templateManagerToolStripMenuItem.Text = "Template Manager";
+            this.templateManagerToolStripMenuItem.Click += new System.EventHandler(this.templateManagerToolStripMenuItem_Click);
             // 
             // btn_NewFromTemplate
             // 
@@ -335,6 +347,7 @@
             this.btn_NewFromTemplate.TabIndex = 28;
             this.btn_NewFromTemplate.Text = "New From Template";
             this.btn_NewFromTemplate.UseVisualStyleBackColor = true;
+            this.btn_NewFromTemplate.Click += new System.EventHandler(this.btn_NewFromTemplate_Click);
             // 
             // btn_CreateTemplateFromGameObject
             // 
@@ -344,6 +357,7 @@
             this.btn_CreateTemplateFromGameObject.TabIndex = 29;
             this.btn_CreateTemplateFromGameObject.Text = "Create Template from Object";
             this.btn_CreateTemplateFromGameObject.UseVisualStyleBackColor = true;
+            this.btn_CreateTemplateFromGameObject.Click += new System.EventHandler(this.btn_CreateTemplateFromGameObject_Click);
             // 
             // GameObjecteEditor
             // 
@@ -422,6 +436,7 @@
         private System.Windows.Forms.ToolStripMenuItem templateManagerToolStripMenuItem;
         private System.Windows.Forms.Button btn_NewFromTemplate;
         private System.Windows.Forms.Button btn_CreateTemplateFromGameObject;
+        private System.Windows.Forms.ToolStripMenuItem saveAsObsToolStripMenuItem;
     }
 }
 

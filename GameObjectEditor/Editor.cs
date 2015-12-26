@@ -21,20 +21,23 @@ namespace GameObjectEditor
         private GameObserver Observer = new GameObserver();
         private GameArchive Archive = GameArchive.Instance;
 
-        private Dictionary<string, GameObject> DisplayObjectList = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> displayObjectList = new Dictionary<string, GameObject>();
         private Dictionary<string, Property> displayObjectPropertiesList = new Dictionary<string, Property>();
+        private Dictionary<string, GameObject> objectTemplates = new Dictionary<string, GameObject>();
 
         private const string extension = "gcod";
         private const string name = "Observer";
+        private string LoadDirectory = "";
+        private string TemplateLoadDirectory = "";
+        private string saveDataFileName = "";
+        private ObserverData currentObserverData;
 
-        private string SaveDirectory = @"C:\";
         private GameObject selectedGameObject;
         private Property selectedProperty;
-        private ObserverData currentObserverData;
+
         public GameObjecteEditor()
         {
             InitializeComponent();
-            DisableAll();
             DisableGameObjectEntry();
             DisableGamePropertyEntry();
         }
@@ -47,14 +50,14 @@ namespace GameObjectEditor
             foreach (KeyValuePair<string, GameObject> obj in observerData.ObjectList)
             {
                 Observer.ObserveGameObject(obj.Value);
-                DisplayObjectList.Add(obj.Key, obj.Value);
+                displayObjectList.Add(obj.Key, obj.Value);
             }
             fillGameObjectListBox();
         }
 
         private void fillGameObjectListBox()
         {
-            foreach (KeyValuePair<string, GameObject> obj in DisplayObjectList)
+            foreach (KeyValuePair<string, GameObject> obj in displayObjectList)
             {
                 listBox_GameObjects.Items.Add(obj.Key);
             }
@@ -64,55 +67,27 @@ namespace GameObjectEditor
         {
             listBox_GameObjects.Items.Clear();
             Observer.ClearObserverGameObjects();
-            DisplayObjectList.Clear();
+            displayObjectList.Clear();
         }
 
         private void AddGameObjectToDisplay(GameObject gameObject)
         {
-            DisplayObjectList.Add(gameObject.Name, gameObject);
+            displayObjectList.Add(gameObject.Name, gameObject);
             listBox_GameObjects.Items.Add(gameObject.Name);
         }
 
         private void RemoveGameObjectFromDisplay(GameObject gameObject)
         {
-            DisplayObjectList.Remove(gameObject.Name);
+            displayObjectList.Remove(gameObject.Name);
             listBox_GameObjects.Items.Remove(gameObject.Name);
         }
 
         private void RemoveGameObjectFromDisplay(string objectName)
         {
-            DisplayObjectList.Remove(objectName);
+            displayObjectList.Remove(objectName);
             listBox_GameObjects.Items.Remove(objectName);
         }
 
-        #endregion
-
-        #region GCD buttons
-        private void btn_NewGCD_Click(object sender, EventArgs e)
-        {
-            ClearGameObjectListBox();
-            ObserverData observerData = Observer.GetObserverData();
-            Response response = fileDialog.SaveFile(observerData, extension, name);
-            SaveDirectory = response.DirectoryPath;
-            EnableAll();
-        }
-        private void btn_LoadGCD_Click(object sender, EventArgs e)
-        {
-            Response response = fileDialog.LoadFile<ObserverData>(extension, name);
-            if (!response.ValidData) return;
-
-            currentObserverData = (ObserverData)response.Data;
-            SaveDirectory = response.DirectoryPath;
-            getGameObjects(currentObserverData);
-            EnableAll();
-        }
-
-        private void btn_SaveGCD_Click(object sender, EventArgs e)
-        {
-            if (currentObserverData == null) return;
-            currentObserverData = Observer.GetObserverData();
-            Archive.SaveData(currentObserverData, SaveDirectory);
-        }
         #endregion
 
         #region GameObject Buttons
@@ -143,17 +118,22 @@ namespace GameObjectEditor
                 MessageBox.Show("Game Object's name cannot be empty", "Empty Game Object Name", MessageBoxButtons.OK);
                 return;
             }
-            if (objectName != txtBox_GameObjectName.Text && doesGameObjectExist)
+            if (objectName != txtBox_GameObjectName.Text)
             {
-                MessageBox.Show("GameObject name " + txtBox_GameObjectName.Text + " already exists");
-                return;
+                if (doesGameObjectExist)
+                {
+                    MessageBox.Show("GameObject name " + txtBox_GameObjectName.Text + " already exists");
+                    return;
+                }
+                GameObject clonedObject = selectedGameObject.CloneGameObject();
+                clonedObject.Name = txtBox_GameObjectName.Text;
+                Observer.UnobserveGameObject(objectName);
+                Observer.ObserveGameObject(clonedObject);
+                RemoveGameObjectFromDisplay(objectName);
+                AddGameObjectToDisplay(clonedObject);
             }
-
-            selectedGameObject.Name = txtBox_GameObjectName.Text;
-            RemoveGameObjectFromDisplay(objectName);
             Observer.UnobserveGameObject(objectName);
             Observer.ObserveGameObject(selectedGameObject);
-            AddGameObjectToDisplay(selectedGameObject);
         }
 
         private void btn_DeleteGameObject_Click(object sender, EventArgs e)
@@ -183,32 +163,15 @@ namespace GameObjectEditor
                     }
                     RemoveGameObjectFromDisplay(txtBox_GameObjectName.Text);
                     txtBox_GameObjectName.Text = string.Empty;
-                    if (selectedGameObject.Name == txtBox_GameObjectName.Text)
-                    {
-                        displayObjectPropertiesList.Clear();
-                        listBox_Properties.Items.Clear();
-                    }
+                    listBox_GameObjects.SelectedItem = null;
+                    selectedGameObject = null;
+                    selectedProperty = null;
+                    DisableGamePropertyEntry();
+                    DisableGameObjectEntry();
                     break;
                 case DialogResult.Cancel:
                     return;
             }
-        }
-        #endregion
-
-        #region Disable All and Enable All buttons
-        private void DisableAll()
-        {
-            btn_NewGameObject.Enabled = false;
-            btn_NewProperty.Enabled = false;
-            btn_SaveGCD.Enabled = false;
-        }
-
-        private void EnableAll()
-        {
-            btn_NewGameObject.Enabled = true;
-            btn_NewProperty.Enabled = true;
-            btn_SaveGCD.Enabled = true;
-
         }
         #endregion
 
@@ -220,19 +183,22 @@ namespace GameObjectEditor
                 DisableGameObjectEntry();
                 DisableGamePropertyEntry();
                 listBox_Properties.Items.Clear();
+                displayObjectPropertiesList = new Dictionary<string, Property>();
+                selectedGameObject = null;
+                selectedProperty = null;
                 return;
             }
-            EnableGameObjectEntry();
             string gameObjectName = (string)listBox_GameObjects.SelectedItem;
-            txtBox_GameObjectName.Text = gameObjectName;
-            
-            GameObject gameObject;
-            DisplayObjectList.TryGetValue(gameObjectName, out gameObject);
-            if (gameObject == null)
+            if (selectedGameObject != null && gameObjectName == selectedGameObject.Name && selectedProperty != null)
             {
-                MessageBox.Show("Null GameObject", "Null GameObject", MessageBoxButtons.OK);
+                listBox_Properties.SelectedItem = selectedProperty.Name;
                 return;
             }
+            DisableGamePropertyEntry();
+            EnableGameObjectEntry();
+            txtBox_GameObjectName.Text = gameObjectName;
+
+            GameObject gameObject = displayObjectList[gameObjectName];
             selectedGameObject = gameObject;
             ClearPropertyFields();
             FillPropertyBox(gameObject.GetAllProperties());
@@ -242,10 +208,10 @@ namespace GameObjectEditor
         {
             if (listBox_Properties.SelectedItem == null)
             {
+                selectedProperty = null;
                 DisableGamePropertyEntry();
                 return;
             }
-            EnableGamePropertyEntry();
             string propertyName = (string)listBox_Properties.SelectedItem;
             EnableGamePropertyEntry();
             txtBox_PropertyName.Text = propertyName;
@@ -458,7 +424,7 @@ namespace GameObjectEditor
         {
             while (true)
             {
-                if (!Observer.DoesGameObjectNameExist(objectName + counter) && !DisplayObjectList.ContainsKey(objectName + counter)) return objectName + counter;
+                if (!Observer.DoesGameObjectNameExist(objectName + counter) && !displayObjectList.ContainsKey(objectName + counter)) return objectName + counter;
                 counter++;
             }
         }
@@ -508,16 +474,20 @@ namespace GameObjectEditor
         private void DisableGameObjectEntry()
         {
             btn_CloneObject.Enabled = false;
+            btn_NewProperty.Enabled = false;
             btn_DeleteGameObject.Enabled = false;
             btn_SaveObject.Enabled = false;
+            btn_CreateTemplateFromGameObject.Enabled = false;
             txtBox_GameObjectName.Enabled = false;
         }
 
         private void EnableGameObjectEntry()
         {
             btn_CloneObject.Enabled = true;
+            btn_NewProperty.Enabled = true;
             btn_DeleteGameObject.Enabled = true;
             btn_SaveObject.Enabled = true;
+            btn_CreateTemplateFromGameObject.Enabled = true;
             txtBox_GameObjectName.Enabled = true;
         }
 
@@ -533,6 +503,7 @@ namespace GameObjectEditor
 
         private void EnableGamePropertyEntry()
         {
+            
             btn_CloneProperty.Enabled = true;
             btn_DeleteProperty.Enabled = true;
             btn_SaveProperty.Enabled = true;
@@ -545,9 +516,8 @@ namespace GameObjectEditor
         {
             ClearGameObjectListBox();
             ObserverData observerData = Observer.GetObserverData();
-            Response response = fileDialog.SaveFile(observerData, extension, name);
-            SaveDirectory = response.DirectoryPath;
-            EnableAll();
+            Response response = fileDialog.SaveFile(observerData, extension, name, "");
+            saveDataFileName = response.DirectoryPath;
         }
 
         private void loadObsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -556,21 +526,167 @@ namespace GameObjectEditor
             if (!response.ValidData) return;
 
             currentObserverData = (ObserverData)response.Data;
-            SaveDirectory = response.DirectoryPath;
+            LoadDirectory = response.DirectoryPath;
             getGameObjects(currentObserverData);
-            EnableAll();
         }
 
         private void saveObsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (currentObserverData == null) return;
-            currentObserverData = Observer.GetObserverData();
-            Archive.SaveData(currentObserverData, SaveDirectory);
+            saveDataFileName = SaveObsData();
         }
 
         private void GameObjecteEditor_Load(object sender, EventArgs e)
         {
+            LoadDirectory = Directory.GetCurrentDirectory();
+            TemplateLoadDirectory = LoadDirectory + @"\Templates";
+            if (!Directory.Exists(TemplateLoadDirectory))
+            {
+                Directory.CreateDirectory(TemplateLoadDirectory);
+            }
+            LoadTemplatesFromFolder();
+        }
+        private void LoadTemplatesFromFolder()
+        {
+            objectTemplates = new Dictionary<string, GameObject>();
+            string[] paths = Directory.GetFiles(TemplateLoadDirectory);
+            foreach (GameObject gameObject in paths.Select(path => Archive.LoadData<GameObject>(path)))
+            {
+                if (objectTemplates.ContainsKey(gameObject.Name))
+                {
+                    objectTemplates[gameObject.Name] = gameObject;
+                    return;
+                }
+                objectTemplates.Add(gameObject.Name, gameObject);
+            }
+        }
 
+        private void templateManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GameObjectTemplateManager templateManager = new GameObjectTemplateManager();
+            templateManager.ShowDialog();
+            LoadTemplatesFromFolder();
+        }
+
+        private void radio_String_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radio_Number_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_NewFromTemplate_Click(object sender, EventArgs e)
+        {
+            List<string> templateNames = objectTemplates.Keys.ToList();
+            SelectTemplateWindow selectTemplate = new SelectTemplateWindow(templateNames);
+            selectTemplate.Closed += delegate
+            {
+                switch (selectTemplate.DialogResult)
+                {
+                    case DialogResult.OK:
+                        NewGameObject newGameObject = new NewGameObject(Observer);
+                        newGameObject.Closed += delegate
+                        {
+                            switch (newGameObject.ValidObject)
+                            {
+                                case true:
+                                    GameObject gameObject = objectTemplates[selectTemplate.SelectedTemplate].CloneGameObject();
+                                    gameObject.Name = newGameObject.ReturnGameObject.Name;
+                                    AddGameObjectToDisplay(gameObject);
+                                    Observer.ObserveGameObject(gameObject);
+                                    return;
+                                case false:
+                                    return;
+                            }
+                        };
+                        newGameObject.ShowDialog();
+                        break;
+                    case DialogResult.Cancel:
+                        return;                        
+                }
+            };
+            selectTemplate.ShowDialog();
+        }
+
+        private void btn_CreateTemplateFromGameObject_Click(object sender, EventArgs e)
+        {
+            GameObject gameObject = selectedGameObject.CloneGameObject();
+            if (objectTemplates.ContainsKey(gameObject.Name))
+            {
+                switch (MessageBox.Show("Overwrite " + gameObject.Name + " template?", "Overwrite Template",MessageBoxButtons.YesNoCancel))
+                {
+                    case DialogResult.Yes:
+                        break;
+                    case DialogResult.No:
+                        switch (MessageBox.Show("Would you like to select a new name?", "", MessageBoxButtons.YesNo))
+                        {
+                            case DialogResult.Yes:
+                                NewNameWindow newName = new NewNameWindow(objectTemplates.Keys.ToList());
+                                switch (newName.ShowDialog())
+                                {
+                                    case DialogResult.OK:
+                                        gameObject.Name = newName.ReturnName;
+                                        break;
+                                    case DialogResult.Cancel:
+                                        return;
+                                }
+                                break;
+                            case DialogResult.No:
+                                return;
+                        }
+                        
+                        break;
+                    case DialogResult.Cancel:
+                        return;
+                }
+            }
+            fileDialog.InitialDirectory = TemplateLoadDirectory;
+            switch (fileDialog.SaveFile(gameObject, "got", "Game Object Template", gameObject.Name).ValidData)
+            {
+                case true:
+                    objectTemplates.Add(gameObject.Name, gameObject);
+                    return;
+                case false:
+                    return;
+            }
+            LoadTemplatesFromFolder();
+
+        }
+
+        private string SaveObsDataAs()
+        {
+            fileDialog.InitialDirectory = LoadDirectory;
+            currentObserverData = Observer.GetObserverData();
+            Response response = fileDialog.SaveFile(currentObserverData, extension, name, saveDataFileName);
+            switch (response.ValidData)
+            {
+                case true:
+                    saveDataFileName = response.DirectoryPath;
+                    return response.DirectoryPath;
+                default:
+                    return "";
+
+            };
+            
+        }
+
+        private string SaveObsData()
+        {
+            if (saveDataFileName == "")
+            {
+                saveDataFileName = SaveObsDataAs();
+                return saveDataFileName;
+            }
+            currentObserverData = Observer.GetObserverData();
+            Archive.SaveData(currentObserverData, saveDataFileName);
+            return saveDataFileName;
+        }
+
+        private void saveAsObsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveDataFileName = SaveObsDataAs();
         }
 
     }

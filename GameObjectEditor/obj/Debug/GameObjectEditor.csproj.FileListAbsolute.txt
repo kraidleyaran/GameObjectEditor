@@ -15,7 +15,6 @@ C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectE
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.exe
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.pdb
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\GameDataLib.dll
-C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\GameDataLib.pdb
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.NewGameObject.resources
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.GameObjecteEditor.resources
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.NewGameObjectProperty.resources
@@ -32,3 +31,8 @@ C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectE
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\SharpDX.RawInput.dll
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\SharpDX.Direct3D9.dll
 C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\MonoGame.Framework.xml
+C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.GameObjectTemplateManager.resources
+C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\GameArchiveLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\bin\Debug\GameGraphicsLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.SelectTemplateWindow.resources
+C:\Users\Alex\Documents\Visual Studio 2013\Projects\GameObjectEditor\GameObjectEditor\obj\Debug\GameObjectEditor.NewNameWindow.resources

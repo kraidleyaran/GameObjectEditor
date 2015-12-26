@@ -37,7 +37,7 @@
     </Reference>
     <Reference Include="FileDialogLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\FileDialogLib\FileDialogLib\bin\Debug\FileDialogLib.dll</HintPath>
+      <HintPath>ExternalRefs\FileDialogLib.dll</HintPath>
     </Reference>
     <Reference Include="GameArchiveLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -101,8 +101,20 @@
     <Compile Include="NewGameObjectProperty.Designer.cs">
       <DependentUpon>NewGameObjectProperty.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewNameWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewNameWindow.Designer.cs">
+      <DependentUpon>NewNameWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectTemplateWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectTemplateWindow.Designer.cs">
+      <DependentUpon>SelectTemplateWindow.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -115,6 +127,9 @@
     <EmbeddedResource Include="NewGameObjectProperty.resx">
       <DependentUpon>NewGameObjectProperty.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewNameWindow.resx">
+      <DependentUpon>NewNameWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -124,6 +139,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SelectTemplateWindow.resx">
+      <DependentUpon>SelectTemplateWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -138,6 +156,32 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExternalRefs\BinaryImageLib.dll" />
+    <Content Include="ExternalRefs\FileDialogLib.dll" />
+    <Content Include="ExternalRefs\FileDialogLib.pdb" />
+    <Content Include="ExternalRefs\GameArchiveLib.dll" />
+    <Content Include="ExternalRefs\GameDataLib.dll" />
+    <Content Include="ExternalRefs\GameGraphicsLib.dll" />
+    <Content Include="ExternalRefs\GameObjectLib.dll" />
+    <Content Include="ExternalRefs\GameObjectLib.pdb" />
+    <Content Include="ExternalRefs\GameObserverLib.dll" />
+    <Content Include="ExternalRefs\Messaging.dll" />
+    <Content Include="ExternalRefs\MonoGame.Framework.dll" />
+    <Content Include="ExternalRefs\MonoGame.Framework.xml" />
+    <Content Include="ExternalRefs\SharpDX.Direct2D1.dll" />
+    <Content Include="ExternalRefs\SharpDX.Direct3D11.dll" />
+    <Content Include="ExternalRefs\SharpDX.Direct3D9.dll" />
+    <Content Include="ExternalRefs\SharpDX.dll" />
+    <Content Include="ExternalRefs\SharpDX.DXGI.dll" />
+    <Content Include="ExternalRefs\SharpDX.MediaFoundation.dll" />
+    <Content Include="ExternalRefs\SharpDX.RawInput.dll" />
+    <Content Include="ExternalRefs\SharpDX.XAudio2.dll" />
+    <Content Include="ExternalRefs\SharpDX.XInput.dll" />
+    <Content Include="FileDialogLib.dll" />
+    <Content Include="FileDialogLib.pdb" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
